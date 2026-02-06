@@ -25,6 +25,13 @@ class StabilityAiApi {
                 },
             },
         };
+        this.test = {
+            request: {
+                baseURL: 'https://api.stability.ai',
+                url: '/v1/user/account',
+                method: 'GET',
+            },
+        };
     }
 }
 exports.StabilityAiApi = StabilityAiApi;

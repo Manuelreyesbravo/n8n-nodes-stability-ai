@@ -1,8 +1,9 @@
-import { IAuthenticateGeneric, ICredentialType, INodeProperties } from 'n8n-workflow';
+import { IAuthenticateGeneric, ICredentialTestRequest, ICredentialType, INodeProperties } from 'n8n-workflow';
 export declare class StabilityAiApi implements ICredentialType {
     name: string;
     displayName: string;
     documentationUrl: string;
     properties: INodeProperties[];
     authenticate: IAuthenticateGeneric;
+    test: ICredentialTestRequest;
 }

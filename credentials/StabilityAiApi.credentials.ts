@@ -1,5 +1,6 @@
-﻿import {
+import {
 	IAuthenticateGeneric,
+	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
 } from 'n8n-workflow';
@@ -25,6 +26,13 @@ export class StabilityAiApi implements ICredentialType {
 			headers: {
 				Authorization: '=Bearer {{$credentials.apiKey}}',
 			},
+		},
+	};
+	test: ICredentialTestRequest = {
+		request: {
+			baseURL: 'https://api.stability.ai',
+			url: '/v1/user/account',
+			method: 'GET',
 		},
 	};
 }
