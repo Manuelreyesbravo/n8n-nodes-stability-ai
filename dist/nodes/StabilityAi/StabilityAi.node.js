@@ -186,33 +186,32 @@ class StabilityAi {
                     if (!bin)
                         throw new n8n_workflow_1.NodeOperationError(this.getNode(), `No binary data in "${imgField}"`, { itemIndex: i });
                     const buf = await this.helpers.getBinaryDataBuffer(i, imgField);
-                    const fd = {
-                        init_image: { value: buf, options: { filename: 'image.png', contentType: bin.mimeType } },
-                        init_image_mode: 'IMAGE_STRENGTH',
-                        image_strength: this.getNodeParameter('imageStrength', i),
-                        'text_prompts[0][text]': this.getNodeParameter('prompt', i),
-                        'text_prompts[0][weight]': this.getNodeParameter('promptWeight', i),
-                        cfg_scale: this.getNodeParameter('cfgScale', i),
-                        steps: this.getNodeParameter('steps', i),
-                        samples: this.getNodeParameter('samples', i),
-                    };
+                    const formData = new FormData();
+                    formData.append('init_image', new Blob([buf], { type: bin.mimeType }), 'image.png');
+                    formData.append('init_image_mode', 'IMAGE_STRENGTH');
+                    formData.append('image_strength', String(this.getNodeParameter('imageStrength', i)));
+                    formData.append('text_prompts[0][text]', String(this.getNodeParameter('prompt', i)));
+                    formData.append('text_prompts[0][weight]', String(this.getNodeParameter('promptWeight', i)));
+                    formData.append('cfg_scale', String(this.getNodeParameter('cfgScale', i)));
+                    formData.append('steps', String(this.getNodeParameter('steps', i)));
+                    formData.append('samples', String(this.getNodeParameter('samples', i)));
                     const neg = this.getNodeParameter('negativePrompt', i);
                     if (neg) {
-                        fd['text_prompts[1][text]'] = neg;
-                        fd['text_prompts[1][weight]'] = -1;
+                        formData.append('text_prompts[1][text]', neg);
+                        formData.append('text_prompts[1][weight]', '-1');
                     }
                     const seed = this.getNodeParameter('seed', i);
                     if (seed > 0)
-                        fd.seed = seed;
+                        formData.append('seed', String(seed));
                     const sampler = this.getNodeParameter('sampler', i);
                     if (sampler)
-                        fd.sampler = sampler;
+                        formData.append('sampler', sampler);
                     const style = this.getNodeParameter('stylePreset', i);
                     if (style)
-                        fd.style_preset = style;
-                    const r = await this.helpers.requestWithAuthentication.call(this, 'stabilityAiApi', {
-                        method: 'POST', uri: `${base}/v1/generation/${eid}/image-to-image`,
-                        formData: fd, headers: { Accept: 'application/json' }, json: true,
+                        formData.append('style_preset', style);
+                    const r = await this.helpers.httpRequestWithAuthentication.call(this, 'stabilityAiApi', {
+                        method: 'POST', url: `${base}/v1/generation/${eid}/image-to-image`,
+                        body: formData, headers: { Accept: 'application/json' },
                     });
                     ret.push(...(await processArtifacts(r)));
                 }
@@ -223,13 +222,12 @@ class StabilityAi {
                     if (!bin)
                         throw new n8n_workflow_1.NodeOperationError(this.getNode(), `No binary data in "${imgField}"`, { itemIndex: i });
                     const buf = await this.helpers.getBinaryDataBuffer(i, imgField);
-                    const fd = {
-                        image: { value: buf, options: { filename: 'image.png', contentType: bin.mimeType } },
-                        width: this.getNodeParameter('upscaleWidth', i),
-                    };
-                    const r = await this.helpers.requestWithAuthentication.call(this, 'stabilityAiApi', {
-                        method: 'POST', uri: `${base}/v1/generation/${eid}/image-to-image/upscale`,
-                        formData: fd, headers: { Accept: 'application/json' }, json: true,
+                    const formData = new FormData();
+                    formData.append('image', new Blob([buf], { type: bin.mimeType }), 'image.png');
+                    formData.append('width', String(this.getNodeParameter('upscaleWidth', i)));
+                    const r = await this.helpers.httpRequestWithAuthentication.call(this, 'stabilityAiApi', {
+                        method: 'POST', url: `${base}/v1/generation/${eid}/image-to-image/upscale`,
+                        body: formData, headers: { Accept: 'application/json' },
                     });
                     ret.push(...(await processArtifacts(r)));
                 }
@@ -242,39 +240,38 @@ class StabilityAi {
                     if (!binInit)
                         throw new n8n_workflow_1.NodeOperationError(this.getNode(), `No binary data in "${imgField}"`, { itemIndex: i });
                     const initBuf = await this.helpers.getBinaryDataBuffer(i, imgField);
-                    const fd = {
-                        init_image: { value: initBuf, options: { filename: 'image.png', contentType: binInit.mimeType } },
-                        mask_source: maskSrc,
-                        'text_prompts[0][text]': this.getNodeParameter('prompt', i),
-                        'text_prompts[0][weight]': this.getNodeParameter('promptWeight', i),
-                        cfg_scale: this.getNodeParameter('cfgScale', i),
-                        steps: this.getNodeParameter('steps', i),
-                        samples: this.getNodeParameter('samples', i),
-                    };
+                    const formData = new FormData();
+                    formData.append('init_image', new Blob([initBuf], { type: binInit.mimeType }), 'image.png');
+                    formData.append('mask_source', maskSrc);
+                    formData.append('text_prompts[0][text]', String(this.getNodeParameter('prompt', i)));
+                    formData.append('text_prompts[0][weight]', String(this.getNodeParameter('promptWeight', i)));
+                    formData.append('cfg_scale', String(this.getNodeParameter('cfgScale', i)));
+                    formData.append('steps', String(this.getNodeParameter('steps', i)));
+                    formData.append('samples', String(this.getNodeParameter('samples', i)));
                     if (maskSrc !== 'INIT_IMAGE_ALPHA') {
                         const binMask = (_d = items[i].binary) === null || _d === void 0 ? void 0 : _d[maskField];
                         if (!binMask)
                             throw new n8n_workflow_1.NodeOperationError(this.getNode(), `No binary data in "${maskField}"`, { itemIndex: i });
                         const maskBuf = await this.helpers.getBinaryDataBuffer(i, maskField);
-                        fd.mask_image = { value: maskBuf, options: { filename: 'mask.png', contentType: binMask.mimeType } };
+                        formData.append('mask_image', new Blob([maskBuf], { type: binMask.mimeType }), 'mask.png');
                     }
                     const neg = this.getNodeParameter('negativePrompt', i);
                     if (neg) {
-                        fd['text_prompts[1][text]'] = neg;
-                        fd['text_prompts[1][weight]'] = -1;
+                        formData.append('text_prompts[1][text]', neg);
+                        formData.append('text_prompts[1][weight]', '-1');
                     }
                     const seed = this.getNodeParameter('seed', i);
                     if (seed > 0)
-                        fd.seed = seed;
+                        formData.append('seed', String(seed));
                     const sampler = this.getNodeParameter('sampler', i);
                     if (sampler)
-                        fd.sampler = sampler;
+                        formData.append('sampler', sampler);
                     const style = this.getNodeParameter('stylePreset', i);
                     if (style)
-                        fd.style_preset = style;
-                    const r = await this.helpers.requestWithAuthentication.call(this, 'stabilityAiApi', {
-                        method: 'POST', uri: `${base}/v1/generation/${eid}/image-to-image/masking`,
-                        formData: fd, headers: { Accept: 'application/json' }, json: true,
+                        formData.append('style_preset', style);
+                    const r = await this.helpers.httpRequestWithAuthentication.call(this, 'stabilityAiApi', {
+                        method: 'POST', url: `${base}/v1/generation/${eid}/image-to-image/masking`,
+                        body: formData, headers: { Accept: 'application/json' },
                     });
                     ret.push(...(await processArtifacts(r)));
                 }
