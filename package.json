@@ -1,5 +1,5 @@
 {
-	"name": "n8n-nodes-stability-ai",
+	"name": "@manu15/n8n-nodes-stability-ai",
 	"version": "0.1.0",
 	"description": "n8n community node for Stability AI - Text to Image, Image to Image, Upscale, Inpainting with Stable Diffusion",
 	"keywords": [
