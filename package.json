@@ -1,0 +1,57 @@
+{
+	"name": "n8n-nodes-stability-ai",
+	"version": "0.1.0",
+	"description": "n8n community node for Stability AI - Text to Image, Image to Image, Upscale, Inpainting with Stable Diffusion",
+	"keywords": [
+		"n8n-community-node-package",
+		"stability-ai",
+		"stable-diffusion",
+		"sdxl",
+		"image-generation",
+		"ai",
+		"text-to-image",
+		"upscale",
+		"inpainting"
+	],
+	"license": "MIT",
+	"homepage": "https://github.com/Manuelreyesbravo/n8n-nodes-stability-ai",
+	"author": {
+		"name": "Manuel Reyes",
+		"email": "manuel@latamflows.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Manuelreyesbravo/n8n-nodes-stability-ai"
+	},
+	"main": "index.js",
+	"scripts": {
+		"build": "tsc && gulp build:icons",
+		"dev": "tsc --watch",
+		"prepublishOnly": "npm run build",
+		"lint": "eslint nodes credentials --ext .ts"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"credentials": [
+			"dist/credentials/StabilityAiApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/StabilityAi/StabilityAi.node.js"
+		]
+	},
+	"devDependencies": {
+		"@types/node": "^22.0.0",
+		"@typescript-eslint/parser": "~7.0.0",
+		"eslint": "^8.56.0",
+		"eslint-plugin-n8n-nodes-base": "^1.16.1",
+		"gulp": "^5.0.0",
+		"n8n-workflow": "*",
+		"typescript": "~5.4.0"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}

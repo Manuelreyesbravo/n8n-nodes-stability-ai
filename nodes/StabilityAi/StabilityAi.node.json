@@ -1,0 +1,11 @@
+﻿{
+	"node": "n8n-nodes-stability-ai.stabilityAi",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["AI"],
+	"subcategories": { "AI": ["Image Generation"] },
+	"resources": {
+		"primaryDocumentation": [{ "url": "https://platform.stability.ai/docs/api-reference" }]
+	},
+	"alias": ["stable diffusion", "image", "ai", "generate", "sdxl"]
+}
