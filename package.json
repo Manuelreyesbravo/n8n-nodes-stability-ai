@@ -1,6 +1,6 @@
 {
 	"name": "@manu15/n8n-nodes-stability-ai",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "n8n community node for Stability AI - Text to Image, Image to Image, Upscale, Inpainting with Stable Diffusion",
 	"keywords": [
 		"n8n-community-node-package",
@@ -17,7 +17,7 @@
 	"homepage": "https://github.com/Manuelreyesbravo/n8n-nodes-stability-ai",
 	"author": {
 		"name": "Manuel Reyes",
-		"email": "manuel@latamflows.com"
+		"email": "manu@latamflows.com"
 	},
 	"repository": {
 		"type": "git",
